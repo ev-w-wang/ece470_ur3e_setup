@@ -25,13 +25,18 @@ endif()
 
 add_executable(ur3e_moveit_test
 	src/ur3e_moveit_test.cpp)
-
 ament_target_dependencies(ur3e_moveit_test moveit_ros_planning_interface)
-
 target_include_directories(ur3e_moveit_test
 	PUBLIC include)
 
-install (TARGETS ur3e_moveit_test
+add_executable(ur3e_wrapper
+	src/ur3e_moveit_wrapper.cpp)
+ament_target_dependencies(ur3e_wrapper moveit_ros_planning_interface)
+target_include_directories(ur3e_wrapper PUBLIC include)
+
+install (TARGETS 
+	ur3e_moveit_test
+	ur3e_wrapper
 	DESTINATION lib/${PROJECT_NAME}
 	)
 
