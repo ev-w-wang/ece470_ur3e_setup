@@ -90,15 +90,19 @@ int main(int argc, char** argv) {
 	// target pose and planning step
 	RCLCPP_INFO(LOGGER,"initialized mgi, psi, and jmg");
 	geometry_msgs::msg::Pose target_pose;
-	target_pose.orientation.w = 1.0;
-	target_pose.position.x = 0.1;
+	target_pose.orientation.x = 0.0;
+	target_pose.orientation.y = 0.0;
+	target_pose.orientation.z = -0.707;
+	target_pose.orientation.w = 0.707;
+	
+	target_pose.position.x = 0.2;
 	target_pose.position.y = -0.3;
-	target_pose.position.z = 0.3;
+	target_pose.position.z = 0.5;
 	move_group.setPoseTarget(target_pose);
 	goToCartPose(target_pose, move_group);
 	rclcpp::sleep_for(std::chrono::seconds(5));
 	// joint value version
-	std::vector<double> joint_group_poses = {178, 311, -10, 225, -38, -35};
+	std::vector<double> joint_group_poses = {0, -90, 90, -90, -90, 90};
 	for(size_t i = 0; i < joint_group_poses.size(); i++) {
 		joint_group_poses[i] = deg_to_rad(joint_group_poses[i]);
 	}
@@ -118,10 +122,10 @@ int main(int argc, char** argv) {
 	geometry_msgs::msg::PoseStamped curr_pose_stamped = move_group.getCurrentPose();
 	geometry_msgs::msg::Pose curr_pose = curr_pose_stamped.pose;
 	geometry_msgs::msg::Pose new_pose_1 = curr_pose;
-	new_pose_1.position.z -= 0.15;
+	new_pose_1.position.y -= 0.15;
 	geometry_msgs::msg::Pose new_pose_2 = new_pose_1;
-	new_pose_2.position.x -= 0.15;
-	std::vector<geometry_msgs::msg::Pose> waypoints = {curr_pose, new_pose_1, new_pose_2};
+	new_pose_2.position.x += 0.15;
+	std::vector<geometry_msgs::msg::Pose> waypoints = {curr_pose, new_pose_1, new_pose_2, curr_pose};
 	int res = moveCartesianPath(waypoints, move_group);
 	if(res < 0) {
 		RCLCPP_ERROR(LOGGER, "failed cartesian path move");

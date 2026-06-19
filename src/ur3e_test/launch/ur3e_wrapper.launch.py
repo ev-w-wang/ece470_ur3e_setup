@@ -8,17 +8,24 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
 
     urdf_path = get_package_share_directory("ur3_moveit_config") + "/config/ur3e.urdf.xacro"
+    ompl_planning_plugin_param = {
+        'ompl': {
+                'planning_plugin': 'ompl_interface/OMPLPlanner'
+        }  
+    }
 
     moveit_config = (
-            MoveItConfigsBuilder("ur3")
+            MoveItConfigsBuilder("ur3", package_name="ur3_moveit_config")
             .robot_description(file_path=urdf_path)
-            ).to_moveit_configs()
+            .planning_pipelines(default_planning_pipeline="ompl", pipelines=["ompl"])
+            .to_moveit_configs()
+            )
 
     moveit_move_group = Node(
             package="moveit_ros_move_group",
             executable="move_group",
             #output="screen",
-            parameters=[moveit_config.to_dict()],
+            parameters=[moveit_config.to_dict(), ompl_planning_plugin_param],
             output="log"
             )
 

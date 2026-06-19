@@ -1,0 +1,29 @@
+planner_plugins:
+  - ompl_interface/OMPLPlanner
+
+request_adapters: >-
+  default_planner_request_adapters/AddTimeOptimalParameterization
+  default_planner_request_adapters/FixStartStateCollision
+  default_planner_request_adapters/ResolveConstraintFrames
+  default_planner_request_adapters/FixWorkspaceBounds
+  default_planner_request_adapters/FixStartStateBounds
+response_adapters: >-
+ default_planner_response_adapters/ValidateSolution
+ default_planner_response_adapters/DisplayMotionPath
+
+planner_configs:
+  RRTStar:
+    type: geometric::RRTstar
+    range: 0.0
+    goal_bias: 0.05
+    delay_collision_checking: 1
+  PRMStar:
+    type: geometric::PRMstar
+
+# Define configurations for your robot's unique planner group
+ur3_arm:
+  default_planner_config: RRTStar
+  planner_configs:
+    - RRTStar
+    - PRMStar
+    
